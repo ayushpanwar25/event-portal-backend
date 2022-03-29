@@ -1,23 +1,38 @@
 import mongoose from 'mongoose';
 
-const clubSchema = mongoose.Schema({
-    name: {
-        type: String,
-        required: true
-    },
-    about: {
-        type: String
-    },
-    president: {
-        type: String,
-        required: true
-    },
-    date: {
-        type: Date,
-        default: Date.now
-    }
-})
+const Club = mongoose.model('Club', new mongoose.Schema({
+	name: {
+		type: String,
+		required: true
+	},
+	email: {
+		type: String,
+		required: true,
+		unique: true
+	},
+	password: {
+		type: String,
+		required: true
+	},
+	about: {
+		type: String
+	},
+	logo: {
+		type: String
+	},
+	president: {
+		type: String
+	},
+	proposals: [{
+		type: mongoose.Schema.Types.ObjectId,
+		ref: 'Proposal'
+	}],
+	events: [{
+		type: mongoose.Schema.Types.ObjectId,
+		ref: 'Event'
+	}]
+}, {
+	collection: 'clubs'
+}));
 
-const Club = mongoose.model('Club', clubSchema);
-
-module.exports = Club;
+export default Club;

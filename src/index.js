@@ -5,8 +5,11 @@ import dotenv from "dotenv";
 
 const app = express();
 dotenv.config();
+
+import authRouter from "./routes/auth.js";
+
 mongoose
-	.connect(process.env.MONGO_URL)
+	.connect(process.env.MONGO_URL, { useUnifiedTopology: true, useNewUrlParser: true })
 	.then(() => console.log("Connected to MongoDB"))
 	.catch((err) => console.log(err));
 
@@ -23,6 +26,11 @@ app.use(
 		optionsSuccessStatus: 200
 	})
 );
+
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+app.use("/api/auth", authRouter);
 
 app.listen(parseInt(process.env.PORT), () =>
 	console.log("API listening on port " + process.env.PORT)
