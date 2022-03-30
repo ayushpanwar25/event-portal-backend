@@ -7,7 +7,7 @@ const app = express();
 dotenv.config();
 
 //incase we need to throw an error
-import ExpressErrorHandler from "./middlewares/ErrorHandlers/ExpressErrorHandler.js";
+import ExpressErrorHandler from "./utils/ErrorHandlers/ExpressErrorHandler.js";
 
 import authRouter from "./routes/auth.js";
 
