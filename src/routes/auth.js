@@ -1,4 +1,5 @@
 import argon2 from 'argon2';
+import AsyncErrorHandler from '../utils/ErrorHandlers/AsyncErrorHandler.js';
 import Club from '../models/Club.js';
 import jwt from 'jsonwebtoken';
 import express from 'express';
@@ -7,7 +8,7 @@ import { secret, verifyToken } from '../middlewares/authjwt.js';
 
 const router = express.Router();
 
-router.post("/register", async (req, res) => {
+router.post("/register", AsyncErrorHandler(async (req, res) => {
 	const errors = [];
 	if (validateClub({ name: req.body.name, email: req.body.email, password: req.body.password })) {
 		validateError.details.forEach((error) => {
@@ -40,9 +41,9 @@ router.post("/register", async (req, res) => {
 	});
 	await club.save();
 	return res.json({ success: true });
-});
+}));
 
-router.post("/signin", async (req, res) => {
+router.post("/signin", AsyncErrorHandler(async (req, res) => {
 	Club.findOne({  email: req.body.email })
 	.exec()
 	.then(async (club) => {
@@ -62,7 +63,7 @@ router.post("/signin", async (req, res) => {
 		console.log(err);
 		return res.status(500).json({ success: false, message: "Something went wrong" });
 	});
-});
+}));
 
 router.get("/checkAuth", verifyToken, (req, res) => {
 	return res.send({ success: true });
