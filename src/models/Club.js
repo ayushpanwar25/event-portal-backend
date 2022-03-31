@@ -23,14 +23,14 @@ const Club = mongoose.model('Club', new mongoose.Schema({
 	president: {
 		type: String
 	},
-	proposals: [{
-		type: mongoose.Schema.Types.ObjectId,
-		ref: 'Proposal'
-	}],
 	events: [{
 		type: mongoose.Schema.Types.ObjectId,
 		ref: 'Event'
-	}]
+	}],
+	faculty: {
+		type: mongoose.Schema.Types.ObjectId,
+		ref: 'FC'
+	},
 }, {
 	collection: 'clubs'
 }));

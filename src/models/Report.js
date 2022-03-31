@@ -9,10 +9,6 @@ const Report = mongoose.model('Report', new mongoose.Schema({
 		type: String,
 		required: true
 	},
-	proposal: {
-		type: String,
-		required: true
-	},
 	date: {
 		type: Date,
 		default: Date.now

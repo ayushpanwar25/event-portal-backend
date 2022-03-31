@@ -64,8 +64,4 @@ router.post("/signin", async (req, res) => {
 	});
 });
 
-router.get("/checkAuth", verifyToken, (req, res) => {
-	return res.send({ success: true });
-});
-
 export default router;
