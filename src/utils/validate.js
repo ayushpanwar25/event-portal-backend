@@ -1,15 +1,42 @@
 import Joi from "joi";
 
-const clubSchema = Joi.object({
+const ClubSchema = Joi.object({
   name: Joi.string().alphanum().required(),
   email: Joi.string().email().required(),
   password: Joi.string().required() //add regex
 });
 
-const proposalSchema = Joi.object();
+const PasswordSchema = Joi.object({
+	password: Joi.string().required()
+});
+
+const ProposalSchema = Joi.object();
+
+const FCSchema = Joi.object();
+
+const DSWSchema = Joi.object();
+
+const EventSchema = Joi.object();
+
+const ReportSchema = Joi.object();
 
 export const validateClub = (data) =>
-  clubSchema.validate(data, { abortEarly: false }).error;
+  ClubSchema.validate(data, { abortEarly: false }).error;
 
 export const validateProposal = (data) =>
-  proposalSchema.validate(data, { abortEarly: false }).error;
+  ProposalSchema.validate(data, { abortEarly: false }).error;
+
+export const validateFC = (data) =>
+  FCSchema.validate(data, { abortEarly: false }).error;
+	
+export const validateDSW = (data) =>
+	DSWSchema.validate(data, { abortEarly: false }).error;
+
+export const validateEvent = (data) =>
+	EventSchema.validate(data, { abortEarly: false }).error;
+
+export const validateReport = (data) =>
+	ReportSchema.validate(data, { abortEarly: false }).error;
+
+export const validatePassword = (data) =>
+	PasswordSchema.validate(data).error;

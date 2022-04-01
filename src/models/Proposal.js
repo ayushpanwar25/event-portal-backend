@@ -1,9 +1,17 @@
 import mongoose from 'mongoose';
 
 const Proposal = mongoose.model('Proposal', new mongoose.Schema({
-	club: {
+	title: {
 		type: String,
 		required: true
+	},
+	clubName: {
+		type: String,
+		required: true
+	},
+	clubId: {
+		type: mongoose.Schema.Types.ObjectId,
+		ref: 'Club',
 	},
 	date: {
 		type: Date,
@@ -12,9 +20,13 @@ const Proposal = mongoose.model('Proposal', new mongoose.Schema({
 	approval: {
 		type: Number,
 		default: 0,
-		min: 0,
-		max: 2
-	}
+		min: -1,
+		max: 3
+	},
+	facultyId: {
+		type: mongoose.Schema.Types.ObjectId,
+		ref: 'FC'
+	},
 }, {
 	collection: 'proposals'
 }));
