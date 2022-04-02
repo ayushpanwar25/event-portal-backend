@@ -62,6 +62,7 @@ const Proposal = mongoose.model('Proposal', new mongoose.Schema({
 		enum: ['physical', 'online'],
 		required: true
 	},
+	// TODO: Add Financial or Non-Financial Field?
 
 	// Online Mode fields
 
