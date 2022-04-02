@@ -1,16 +1,27 @@
 import mongoose from 'mongoose';
 
 const Proposal = mongoose.model('Proposal', new mongoose.Schema({
-	club: {
+	// Club Details
+	clubName: {
 		type: String,
 		required: true
 	},
+	clubId: {
+		type: mongoose.Schema.Types.ObjectId,
+		ref: 'Club',
+	},
+	facultyId: {
+		type: mongoose.Schema.Types.ObjectId,
+		ref: 'FC'
+	},
+
+	// Event Details
 	eventName: {
 		type: String,
 		requried: true
 	},
 	schedule: {
-		type: Date,
+		type: Date,        //TODO: Add diff Start and End field or convert to String 
 		requried: true
 	},
 	intro: {
@@ -29,36 +40,45 @@ const Proposal = mongoose.model('Proposal', new mongoose.Schema({
 		type: String,
 		requried: true
 	},
-	broschure: {
+	brochure: {
 		type: String,
 		requried: true
 	},
+
+	// Event Details END
+
 	undertaking: {
 		type: Boolean,
 		required: true,
 		default: false
 	},
-	scsigin: {
-
-	},
-	cpsign: {
-
-	},
-	fcsign: {
-
-	},
 	detail: {
-
+		// TODO: Add comments and Approvals for others
 	},
+
+	// Attribute for physical or online event
+	modeType: {
+		type: String,
+		enum: ['physical', 'online'],
+		required: true
+	},
+
+	// Online Mode fields
+
 	onlinePlatform: {
 		type: String
 	},
 	eventLink: {
 		type: URL
 	},
+
+	// Offline Mode fields
 	venue: {
 		type: String
 	},
+
+	// fees 
+
 	registrationFee: {
 		type: Number,
 		default: 0
@@ -72,7 +92,9 @@ const Proposal = mongoose.model('Proposal', new mongoose.Schema({
 		default: none
 	},
 	budget: {
-		//tabuler form
+		type: String,
+		// Includes budget, purchase requirement and cost 
+		// Stores PDF Link
 	},
 	approval: {
 		type: Number,
@@ -86,14 +108,6 @@ const Proposal = mongoose.model('Proposal', new mongoose.Schema({
 	date: {
 		type: Date,
 		default: Date.now
-	},
-	clubId: {
-		type: mongoose.Schema.Types.ObjectId,
-		ref: 'Club',
-	},
-	facultyId: {
-		type: mongoose.Schema.Types.ObjectId,
-		ref: 'FC'
 	},
 }, {
 	collection: 'proposals'
