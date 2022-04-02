@@ -70,7 +70,7 @@ const Proposal = mongoose.model('Proposal', new mongoose.Schema({
 		type: String
 	},
 	eventLink: {
-		type: URL
+		type: String
 	},
 
 	// Offline Mode fields
@@ -86,11 +86,9 @@ const Proposal = mongoose.model('Proposal', new mongoose.Schema({
 	},
 	sponsorship: {
 		type: String,
-		default: none
 	},
 	prize: {
 		type: String,
-		default: none
 	},
 	budget: {
 		type: String,
