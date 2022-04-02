@@ -1,5 +1,12 @@
 import Joi from "joi";
 
+const UserSchema = Joi.object({
+	regNo: Joi.number().required(),
+  name: Joi.string().alphanum().required(),
+  email: Joi.string().email().required(),
+  password: Joi.string().required() //add regex
+});
+
 const ClubSchema = Joi.object({
   name: Joi.string().alphanum().required(),
   email: Joi.string().email().required(),
@@ -19,6 +26,9 @@ const DSWSchema = Joi.object();
 const EventSchema = Joi.object();
 
 const ReportSchema = Joi.object();
+
+export const validateUser = (data) =>
+  UserSchema.validate(data, { abortEarly: false }).error;
 
 export const validateClub = (data) =>
   ClubSchema.validate(data, { abortEarly: false }).error;

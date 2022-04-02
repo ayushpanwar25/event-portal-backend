@@ -1,5 +1,6 @@
 //import jwt from 'jsonwebtoken';
 //import crypto from 'crypto';
+import User from '../models/User.js';
 import Club from '../models/Club.js';
 import DSW from '../models/DSW.js';
 import FC from '../models/FacultyCoordinator.js';
@@ -17,6 +18,15 @@ import Admin from '../models/Admin.js';
 		next();
 	});
 } */
+
+const verifyUser = async (req, res, next) => {
+	if(!req.session.userId) return res.status(401).json({ success: false, message: 'Unauthorized' });
+	User.findById(req.session.userId)
+		.then(user => {
+			if(!user) return res.status(401).json({ success: false, message: 'Unauthorized' });
+			next();
+		});
+}
 
 const verifyClub = async (req, res, next) => {
 	if(!req.session.userId) return res.status(401).json({ success: false, message: 'Unauthorized' });
@@ -54,4 +64,4 @@ const verifyAdmin = async (req, res, next) => {
 		});
 }
 
-export { verifyClub, verifyFC, verifyDSW, verifyAdmin };
+export { verifyUser, verifyClub, verifyFC, verifyDSW, verifyAdmin };

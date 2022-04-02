@@ -1,6 +1,10 @@
 import mongoose from 'mongoose';
 
 const Event = mongoose.model('Event', new mongoose.Schema({
+	clubId: {
+		type: mongoose.Schema.Types.ObjectId,
+		ref: 'Club',
+	},
 	title: {
 		type: String,
 		required: true
@@ -17,11 +21,15 @@ const Event = mongoose.model('Event', new mongoose.Schema({
 		type: Date,
 		default: Date.now
 	},
-	proposal: {
+	registrations: [{
+		type: mongoose.Schema.Types.ObjectId,
+		ref: 'User'
+	}],
+	proposalId: {
 		type: mongoose.Schema.Types.ObjectId,
 		ref: 'Proposal'
 	},
-	report: {
+	reportId: {
 		type: mongoose.Schema.Types.ObjectId,
 		ref: 'Report'
 	}
