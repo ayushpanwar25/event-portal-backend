@@ -4,10 +4,6 @@ import { verifyClub } from "../../middlewares/checkAuth.js";
 import Club from "../../models/Club.js";
 import mongoose from "mongoose";
 
-//temp
-import Admin from "../../models/Admin.js";
-import argon2 from 'argon2'
-
 const router = express.Router();
 
 router.get("/get", verifyClub, async (req, res) => {
@@ -36,7 +32,6 @@ router.get("/get/:id", verifyClub, async (req, res) => {
 router.post("/create", verifyClub, async (req, res) => {
 	const newProposal = new Proposal(req.body);
 
-	// TODO: Do post saving operations
 	Club.findById(req.session.userId)
 		.then(club => {
 			// Get club details
