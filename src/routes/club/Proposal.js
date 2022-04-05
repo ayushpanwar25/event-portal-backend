@@ -40,6 +40,7 @@ router.post("/create", verifyClub, async (req, res) => {
 			// Get club details
 			newProposal.clubName = club.name
 			newProposal.clubId = mongoose.Types.ObjectId(club)
+			newProposal.approval = 0 // Prevent user insertion
 
 			// Save proposal to database
 			newProposal.save()
@@ -65,6 +66,7 @@ router.put("/edit/:id", verifyClub, async (req, res) => {
 				delete req.body.clubName
 				delete req.body.clubId
 				delete req.body.facultyId
+				delete req.body.approval
 
 				// Process update request
 				Proposal.findByIdAndUpdate(req.params.id, req.body)
