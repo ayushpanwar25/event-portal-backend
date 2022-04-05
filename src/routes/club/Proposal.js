@@ -1,8 +1,10 @@
-import Proposal from "../../models/Proposal.js";
 import express from "express";
-import { verifyClub } from "../../middlewares/checkAuth.js";
-import Club from "../../models/Club.js";
 import mongoose from "mongoose";
+
+import Club from "../../models/Club.js";
+import Proposal from "../../models/Proposal.js";
+
+import { verifyClub } from "../../middlewares/checkAuth.js";
 
 const router = express.Router();
 
@@ -32,6 +34,7 @@ router.get("/get/:id", verifyClub, async (req, res) => {
 router.post("/create", verifyClub, async (req, res) => {
 	const newProposal = new Proposal(req.body);
 
+	// TODO: Do post saving operations
 	Club.findById(req.session.userId)
 		.then(club => {
 			// Get club details
