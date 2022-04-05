@@ -65,7 +65,7 @@ router.put("/edit/:id", verifyClub, async (req, res) => {
 				// Prevent insertion of club details from user end
 				delete req.body.clubName
 				delete req.body.clubId
-				delete req.body.facultyId
+				delete req.body.facultyId // Should be allowed?
 				delete req.body.approval
 
 				// Process update request
