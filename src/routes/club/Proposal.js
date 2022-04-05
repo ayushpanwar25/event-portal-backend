@@ -63,9 +63,6 @@ router.put("/edit/:id", verifyClub, async (req, res) => {
 		.then(proposal => {
 			if (proposal.clubId == req.session.userId) {
 				// Prevent insertion of club details from user end
-				delete req.body.clubName
-				delete req.body.clubId
-				delete req.body.facultyId // Should be allowed?
 				delete req.body.approval
 
 				// Process update request
