@@ -61,7 +61,7 @@ router.put("/edit/:id", verifyClub, async (req, res) => {
 	// TODO: Add a check so club cannot edit major or any data once it's approved by faculty
 	Proposal.findById(req.params.id)
 		.then(proposal => {
-			if (proposal.clubId == req.session.userId) {
+			if (proposal.clubId == req.session.userId && proposal.approval == 0) {
 				// Prevent insertion of club details from user end
 				delete req.body.approval
 
