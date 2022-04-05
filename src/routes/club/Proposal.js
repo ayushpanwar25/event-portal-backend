@@ -1,6 +1,12 @@
 import Proposal from "../../models/Proposal.js";
 import express from "express";
 import { verifyClub } from "../../middlewares/checkAuth.js";
+import Club from "../../models/Club.js";
+import mongoose from "mongoose";
+
+//temp
+import Admin from "../../models/Admin.js";
+import argon2 from 'argon2'
 
 const router = express.Router();
 
@@ -14,10 +20,10 @@ router.get("/get", verifyClub, async (req, res) => {
 router.get("/get/:id", verifyClub, async (req, res) => {
 	Proposal.findById(req.params.id)
 		.then((proposal) => {
-			if(!proposal) {
+			if (!proposal) {
 				return res.status(500).send({ success: false, message: "Proposal not found" });
 			}
-			if(proposal.clubId.equals(req.session.userId)) {
+			if (proposal.clubId.equals(req.session.userId)) {
 				return res.json({ success: true, proposal });
 			}
 			else {
@@ -28,14 +34,80 @@ router.get("/get/:id", verifyClub, async (req, res) => {
 
 
 router.post("/create", verifyClub, async (req, res) => {
+	const newProposal = new Proposal(req.body);
 
-});
+	// TODO: Do post saving operations
+	Club.findById(req.session.userId)
+		.then(club => {
+			// Get club details
+			newProposal.clubName = club.name
+			newProposal.clubId = mongoose.Types.ObjectId(club)
+
+			// Save proposal to database
+			newProposal.save()
+				.then((proposal) => {
+					res.status(200).send({ success: true, id: proposal.id })
+				})
+				.catch((err) => {
+					return res.status(400).send({ success: false, message: "Data validation failed", error: err });
+				})
+		})
+		.catch((err) => {
+			res.status(404).send({ success: false, message: "Cannot find club ID" })
+		});
+
+})
 
 router.put("/edit/:id", verifyClub, async (req, res) => {
+	// TODO: Add a check so club cannot edit major or any data once it's approved by faculty
+	Proposal.findById(req.params.id)
+		.then(proposal => {
+			if (proposal.clubId == req.session.userId) {
+				// Prevent insertion of club details from user end
+				delete req.body.clubName
+				delete req.body.clubId
+				delete req.body.facultyId
+
+				// Process update request
+				Proposal.findByIdAndUpdate(req.params.id, req.body)
+					.then(proposal => {
+						res.status(200).send({ success: true, id: proposal.id })
+					})
+					.catch(err => {
+						res.status(500).send({success: false, message: "Failed to update proposal"})
+					})
+			}
+			else {
+				res.status(403).send({ success: false, message: "You do not have access to this proposal" })
+			}
+		})
+		.catch((err) => {
+			res.status(404).send({ success: false, message: "Proposal not found", error: err })
+		})
 
 });
 
 router.delete("/delete/:id", verifyClub, async (req, res) => {
+	// TODO: Should clubs be allowed to simply delete a propoasl
+	// TODO: Should there be a approval stage check so clubs can't delete at stage say  if it's approved by faculty
+	Proposal.findById(req.params.id)
+		.then(proposal => {
+			if (proposal.clubId == req.session.userId) {
+				Proposal.findByIdAndDelete(req.params.id)
+					.then(deletedProposal => {
+						res.status(200).send({ success: true })
+					})
+					.catch(err => {
+						res.status(500).send({ success: false, message: "Failed to delete proposal" })
+					})
+			}
+			else {
+				res.status(403).send({ success: false, message: "You do not have access to this proposal" })
+			}
+		})
+		.catch((err) => {
+			res.status(404).send({ success: false, message: "Proposal not found", error: err })
+		})
 
 });
 
