@@ -14,6 +14,8 @@ import ClubProposalRouter from "./routes/club/Proposal.js";
 import FCProposalRouter from "./routes/faculty/Proposal.js";
 import DSWProposalRouter from "./routes/dsw/Proposal.js";
 
+import UserEventRouter from "./routes/user/Event.js";
+
 const app = express();
 dotenv.config();
 
@@ -62,12 +64,14 @@ const main = async () => {
 
 	app.use("/api/club/auth", ClubAuthenticationRouter);
 	app.use("/api/club/proposal", ClubProposalRouter);
-
+	
 	app.use("/api/faculty/auth", FCAuthenticationRouter);
 	app.use("/api/faculty/proposal", FCProposalRouter);
-
+	
 	app.use("/api/dsw/auth", DSWAuthenticationRouter);
 	app.use("/api/dsw/proposal", DSWProposalRouter);
+	
+	app.use("/api/user/event", UserEventRouter);
 
 	//error "handler"
 	app.use(function (err, req, res, next) {

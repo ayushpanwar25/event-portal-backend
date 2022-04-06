@@ -3,6 +3,7 @@ import mongoose from "mongoose";
 
 import Club from "../../models/Club.js";
 import Proposal from "../../models/Proposal.js";
+import Event from "../../models/Event.js";
 
 import { verifyClub } from "../../middlewares/checkAuth.js";
 
@@ -45,7 +46,22 @@ router.post("/create", verifyClub, async (req, res) => {
 			// Save proposal to database
 			newProposal.save()
 				.then((proposal) => {
-					res.status(200).send({ success: true, id: proposal.id })
+					// Create a draft event
+					const newEvent = new Event({
+						clubId: newProposal.clubId,
+						club: newProposal.clubName,
+						title: newProposal.eventName,
+						description: "",
+						proposalId: proposal.id,
+					})
+
+					newEvent.save()
+						.then(event => {
+							res.status(200).send({ success: true, proposal_id: proposal.id, event_id: event.id })
+						})
+						.catch(err => {
+							return res.status(500).send({ success: false, message: "Failed to create event", error: err });
+						})
 				})
 				.catch((err) => {
 					return res.status(400).send({ success: false, message: "Data validation failed", error: err });
