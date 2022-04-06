@@ -4,15 +4,18 @@ const Proposal = mongoose.model('Proposal', new mongoose.Schema({
 	// Club Details
 	clubName: {
 		type: String,
-		required: true
-	},
+		required: true,
+		immutable: true 
+	},	
 	clubId: {
 		type: mongoose.Schema.Types.ObjectId,
 		ref: 'Club',
+		immutable: true 
 	},
 	facultyId: {
 		type: mongoose.Schema.Types.ObjectId,
-		ref: 'FC'
+		ref: 'FC',
+		immutable: true 
 	},
 
 	// Event Details
