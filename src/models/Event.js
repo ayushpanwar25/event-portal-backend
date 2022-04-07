@@ -25,6 +25,10 @@ const Event = mongoose.model('Event', new mongoose.Schema({
 		type: mongoose.Schema.Types.ObjectId,
 		ref: 'User'
 	}],
+	visible: {
+		type: Boolean,
+		default: false
+	},
 	proposalId: {
 		type: mongoose.Schema.Types.ObjectId,
 		ref: 'Proposal'
