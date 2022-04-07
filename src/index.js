@@ -11,6 +11,7 @@ import ClubAuthenticationRouter from "./routes/club/ClubAuthentication.js";
 import FCAuthenticationRouter from "./routes/faculty/FCAuthentication.js";
 import DSWAuthenticationRouter from "./routes/dsw/DSWAuthentication.js";
 import ClubProposalRouter from "./routes/club/Proposal.js";
+import ClubEventRouter from "./routes/club/Event.js";
 import FCProposalRouter from "./routes/faculty/Proposal.js";
 import DSWProposalRouter from "./routes/dsw/Proposal.js";
 
@@ -64,6 +65,7 @@ const main = async () => {
 
 	app.use("/api/club/auth", ClubAuthenticationRouter);
 	app.use("/api/club/proposal", ClubProposalRouter);
+	app.use("/api/club/event", ClubEventRouter);
 	
 	app.use("/api/faculty/auth", FCAuthenticationRouter);
 	app.use("/api/faculty/proposal", FCProposalRouter);
