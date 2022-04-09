@@ -1,10 +1,10 @@
 //import jwt from 'jsonwebtoken';
 //import crypto from 'crypto';
-import User from '../models/User.js';
-import Club from '../models/Club.js';
-import DSW from '../models/DSW.js';
-import FC from '../models/FacultyCoordinator.js';
-import Admin from '../models/Admin.js';
+import User from "../models/User.js";
+import Club from "../models/Club.js";
+import DSW from "../models/DSW.js";
+import Faculty from "../models/Faculty.js";
+import Admin from "../models/Admin.js";
 
 //const secret = crypto.randomBytes(64).toString('hex');
 
@@ -20,48 +20,53 @@ import Admin from '../models/Admin.js';
 } */
 
 const verifyUser = async (req, res, next) => {
-	if(!req.session.userId) return res.status(401).json({ success: false, message: 'Unauthorized' });
-	User.findById(req.session.userId)
-		.then(user => {
-			if(!user) return res.status(401).json({ success: false, message: 'Unauthorized' });
-			next();
-		});
-}
+  if (!req.session.userId)
+    return res.status(401).json({ success: false, message: "Unauthorized" });
+  User.findById(req.session.userId).then((user) => {
+    if (!user)
+      return res.status(401).json({ success: false, message: "Unauthorized" });
+    next();
+  });
+};
 
 const verifyClub = async (req, res, next) => {
-	if(!req.session.userId) return res.status(401).json({ success: false, message: 'Unauthorized' });
-	Club.findById(req.session.userId)
-		.then(club => {
-			if(!club) return res.status(401).json({ success: false, message: 'Unauthorized' });
-			next();
-		});
-}
+  if (!req.session.userId)
+    return res.status(401).json({ success: false, message: "Unauthorized" });
+  Club.findById(req.session.userId).then((club) => {
+    if (!club)
+      return res.status(401).json({ success: false, message: "Unauthorized" });
+    next();
+  });
+};
 
-const verifyFC = async (req, res, next) => {
-	if(!req.session.userId) return res.status(401).json({ success: false, message: 'Unauthorized' });
-	FC.findById(req.session.userId)
-		.then(fc => {
-			if(!fc) return res.status(401).json({ success: false, message: 'Unauthorized' });
-			next();
-		});
-}
+const verifyFaculty = async (req, res, next) => {
+  if (!req.session.userId)
+    return res.status(401).json({ success: false, message: "Unauthorized" });
+  Faculty.findById(req.session.userId).then((faculty) => {
+    if (!faculty)
+      return res.status(401).json({ success: false, message: "Unauthorized" });
+    next();
+  });
+};
 
 const verifyDSW = async (req, res, next) => {
-	if(!req.session.userId) return res.status(401).json({ success: false, message: 'Unauthorized' });
-	DSW.findById(req.session.userId)
-		.then(dsw => {
-			if(!dsw) return res.status(401).json({ success: false, message: 'Unauthorized' });
-			next();
-		});
-}
+  if (!req.session.userId)
+    return res.status(401).json({ success: false, message: "Unauthorized" });
+  DSW.findById(req.session.userId).then((dsw) => {
+    if (!dsw)
+      return res.status(401).json({ success: false, message: "Unauthorized" });
+    next();
+  });
+};
 
 const verifyAdmin = async (req, res, next) => {
-	if(!req.session.userId) return res.status(401).json({ success: false, message: 'Unauthorized' });
-	Admin.findById(req.session.userId)
-		.then(admin => {
-			if(!admin) return res.status(401).json({ success: false, message: 'Unauthorized' });
-			next();
-		});
-}
+  if (!req.session.userId)
+    return res.status(401).json({ success: false, message: "Unauthorized" });
+  Admin.findById(req.session.userId).then((admin) => {
+    if (!admin)
+      return res.status(401).json({ success: false, message: "Unauthorized" });
+    next();
+  });
+};
 
-export { verifyUser, verifyClub, verifyFC, verifyDSW, verifyAdmin };
+export { verifyUser, verifyClub, verifyFaculty, verifyDSW, verifyAdmin };

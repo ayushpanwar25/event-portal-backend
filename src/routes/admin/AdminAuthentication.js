@@ -1,22 +1,23 @@
 import express from "express";
-import argon2 from 'argon2';
-import Admin from "../../models/Admin.js"
+import argon2 from "argon2";
+import Admin from "../../models/Admin.js";
 
 const router = express.Router();
 
 router.post("/signin", async (req, res) => {
-	const admin = await Admin.findOne({ email: req.body.email });
-	if(!admin) {
-		return res.status(401).json({ success: false, message: "Email not found"});
-	}
-	const passValid = await argon2.verify(admin.password, req.body.password);
-	if(!passValid) {
-		return res.status(401).json({ success: false, message: "Password is incorrect"});
-	}
-	else {
-		req.session.userId = admin._id;
-		return res.send({ success: true, user: { email: admin.email } });
-	}
+  const admin = await Admin.findOne({ email: req.body.email });
+  if (!admin) {
+    return res.status(401).json({ success: false, message: "Email not found" });
+  }
+  const passValid = await argon2.verify(admin.password, req.body.password);
+  if (!passValid) {
+    return res
+      .status(401)
+      .json({ success: false, message: "Password is incorrect" });
+  } else {
+    req.session.userId = admin._id;
+    return res.send({ success: true, user: { email: admin.email } });
+  }
 });
 
 /* router.post("/resetpassword", verifyAdmin, async (req, res) => {

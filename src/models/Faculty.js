@@ -1,9 +1,13 @@
 import mongoose from "mongoose";
 
-const Admin = mongoose.model(
-  "Admin",
+const Faculty = mongoose.model(
+  "Faculty",
   new mongoose.Schema(
     {
+      name: {
+        type: String,
+        required: true,
+      },
       email: {
         type: String,
         required: true,
@@ -14,9 +18,9 @@ const Admin = mongoose.model(
       },
     },
     {
-      collection: "admin",
+      collection: "faculty",
     }
   )
 );
 
-export default Admin;
+export default Faculty;
