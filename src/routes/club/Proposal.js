@@ -1,24 +1,23 @@
 import express from "express";
 import mongoose from "mongoose";
-
 import Club from "../../models/Club.js";
 import Proposal from "../../models/Proposal.js";
-import Event from "../../models/Event.js";
-
 import { verifyClub } from "../../middlewares/checkAuth.js";
+import { validateProposal } from "../../utils/validate.js";
 
 const router = express.Router();
+router.use(verifyClub);
 
-router.get("/get", verifyClub, async (req, res) => {
+router.get("/", async (req, res) => {
 	Proposal.find({ clubId: req.session.userId })
-		.then(async (proposals) => {
+		.then(proposals => {
 			return res.json({ success: true, proposals });
 		});
 });
 
-router.get("/get/:id", verifyClub, async (req, res) => {
+router.get("/:id", async (req, res) => {
 	Proposal.findById(req.params.id)
-		.then((proposal) => {
+		.then(proposal => {
 			if (!proposal) {
 				return res.status(500).send({ success: false, message: "Proposal not found" });
 			}
@@ -31,97 +30,84 @@ router.get("/get/:id", verifyClub, async (req, res) => {
 		});
 });
 
-
-router.post("/create", verifyClub, async (req, res) => {
-	const newProposal = new Proposal(req.body);
-
+router.post("/create", async (req, res) => {
+	const errors = [];
+	const validateError = validateProposal(req.body);
+	if (validateError) {
+		validateError.details.forEach((error) => {
+			errors.push({
+				key: error.path[0],
+				message: error.message
+			});
+		});
+		return res.json({ success: false, errors });
+	}
 	// TODO: Do post saving operations
 	Club.findById(req.session.userId)
-		.then(club => {
-			// Get club details
-			newProposal.clubName = club.name
-			newProposal.clubId = mongoose.Types.ObjectId(club)
-			newProposal.approval = 0 // Prevent user insertion
-
-			// Save proposal to database
-			newProposal.save()
-				.then((proposal) => {
-					// Create a draft event
-					const newEvent = new Event({
-						clubId: newProposal.clubId,
-						club: newProposal.clubName,
-						title: newProposal.eventName,
-						description: "",
-						proposalId: proposal.id,
-					})
-
-					newEvent.save()
-						.then(event => {
-							res.status(200).send({ success: true, proposal_id: proposal.id, event_id: event.id })
-						})
-						.catch(err => {
-							return res.status(500).send({ success: false, message: "Failed to create event", error: err });
-						})
+		.then(async (club) => {
+			// TODO: destructure req.body
+			const proposal = new Proposal(req.body);
+			proposal.clubName = club.name;
+			proposal.clubId = mongoose.Types.ObjectId(club);
+			proposal.approval = 0; // Prevent user insertion
+			proposal.save()
+				.then(proposal => {
+					return res.status(200).send({ success: true, proposalId: proposal._id, })
 				})
-				.catch((err) => {
-					return res.status(400).send({ success: false, message: "Data validation failed", error: err });
-				})
+				.catch(err => {
+					return res.status(500).send({ success: false, message: "Failed to create event", error: err });
+				});
 		})
 		.catch((err) => {
-			res.status(404).send({ success: false, message: "Cannot find club ID" })
+			return res.status(404).send({ success: false });
 		});
-
 })
 
-router.put("/edit/:id", verifyClub, async (req, res) => {
-	// TODO: Add a check so club cannot edit major or any data once it's approved by faculty
+router.put("/edit/:id", async (req, res) => {
 	Proposal.findById(req.params.id)
 		.then(proposal => {
 			if (proposal.clubId == req.session.userId && proposal.approval == 0) {
 				// Prevent insertion of club details from user end
-				delete req.body.approval
+				delete req.body.approval;
+				delete req.body.clubId;
 
 				// Process update request
 				Proposal.findByIdAndUpdate(req.params.id, req.body)
 					.then(proposal => {
-						res.status(200).send({ success: true, id: proposal.id })
+						return res.status(200).send({ success: true });
 					})
 					.catch(err => {
-						res.status(500).send({success: false, message: "Failed to update proposal"})
-					})
+						return es.status(500).send({ success: false });
+					});
 			}
 			else {
-				res.status(403).send({ success: false, message: "You do not have access to this proposal" })
+				return res.status(403).send({ success: false, message: "Forbidden" });
 			}
 		})
 		.catch((err) => {
-			res.status(404).send({ success: false, message: "Proposal not found", error: err })
-		})
-
+			return res.status(404).send({ success: false });
+		});
 });
 
-router.delete("/delete/:id", verifyClub, async (req, res) => {
-	// TODO: Should clubs be allowed to simply delete a propoasl
-	// TODO: Should there be a approval stage check so clubs can't delete at stage say  if it's approved by faculty
+router.delete("/:id", async (req, res) => {
 	Proposal.findById(req.params.id)
 		.then(proposal => {
-			if (proposal.clubId == req.session.userId) {
+			if (proposal.clubId == req.session.userId && proposal.approval == 0) { //can only delete before forwarding to faculty
 				Proposal.findByIdAndDelete(req.params.id)
-					.then(deletedProposal => {
-						res.status(200).send({ success: true })
+					.then(proposal => {
+						return res.status(200).send({ success: true });
 					})
 					.catch(err => {
-						res.status(500).send({ success: false, message: "Failed to delete proposal" })
+						return res.status(500).send({ success: false });
 					})
 			}
 			else {
-				res.status(403).send({ success: false, message: "You do not have access to this proposal" })
+				return res.status(403).send({ success: false, message: "Forbidden" });
 			}
 		})
 		.catch((err) => {
-			res.status(404).send({ success: false, message: "Proposal not found", error: err })
-		})
-
+			res.status(404).send({ success: false });
+		});
 });
 
 export default router;

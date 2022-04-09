@@ -39,8 +39,13 @@ router.post("/register", async (req, res) => {
 			email: req.body.email,
 			password: await argon2.hash(req.body.password)
 		});
-		await club.save();
-		return res.json({ success: true });
+		club.save()
+			.then(club => {
+				return res.json({ success: true, clubId: club._id });
+			})
+			.catch(err => {
+				return res.status(500).json({ success: false });
+			});
 	}
 });
 

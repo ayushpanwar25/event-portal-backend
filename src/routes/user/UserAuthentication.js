@@ -45,8 +45,13 @@ router.post("/register", async (req, res) => {
 			email: req.body.email,
 			password: await argon2.hash(req.body.password)
 		});
-		await User.save();
-		return res.json({ success: true });
+		User.save()
+			.then(user => {
+				return res.json({ success: true, userId: user._id });
+			})
+			.catch(err => {
+				return res.status(500).json({ success: false });
+			});
 	}
 });
 

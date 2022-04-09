@@ -1,74 +1,8 @@
 import express from "express";
 import argon2 from 'argon2';
-import DSW from "../../models/DSW.js";
-import FacultyCoordinator from "../../models/FacultyCoordinator.js";
 import Admin from "../../models/Admin.js"
-import { validateAdmin, validateFC, validatePassword } from '../../utils/validate.js';
-import { verifyAdmin } from '../../middlewares/checkAuth.js';
 
 const router = express.Router();
-
-router.post("/facultyregister", async (req, res) => {
-	const errors = [];
-	const validateError = validateFC({ name: req.body.name, email: req.body.email, password: req.body.password });
-	if (validateError) {
-		validateError.details.forEach((error) => {
-			errors.push({
-				key: error.path[0],
-				message: error.message
-			});
-		});
-		return res.json(errors);
-	}
-	const emailExists = await FacultyCoordinator.findOne({ email: req.body.email });
-	if (emailExists) {
-		errors.push({
-			key: "email",
-			message: "Email already exists"
-		});
-	}
-	if (emailExists) return res.json({ errors });
-	else {
-		const fc = new FacultyCoordinator({
-			name: req.body.name,
-			email: req.body.email,
-			password: await argon2.hash(req.body.password)
-		});
-		await fc.save();
-		return res.json({ success: true });
-	}
-});
-
-router.post("/dswregister", async (req, res) => {
-	const errors = [];
-	const validateError = validateDSW({ name: req.body.name, email: req.body.email, password: req.body.password });
-	if (validateError) {
-		validateError.details.forEach((error) => {
-			errors.push({
-				key: error.path[0],
-				message: error.message
-			});
-		});
-		return res.json(errors);
-	}
-	const emailExists = await DSW.findOne({ email: req.body.email });
-	if (emailExists) {
-		errors.push({
-			key: "email",
-			message: "Email already exists"
-		});
-	}
-	if (emailExists) return res.json({ errors });
-	else {
-		const dsw = new DSW({
-			name: req.body.name,
-			email: req.body.email,
-			password: await argon2.hash(req.body.password)
-		});
-		await dsw.save();
-		return res.json({ success: true });
-	}
-});
 
 router.post("/signin", async (req, res) => {
 	const admin = await Admin.findOne({ email: req.body.email });

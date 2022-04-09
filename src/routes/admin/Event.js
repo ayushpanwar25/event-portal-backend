@@ -1,4 +1,4 @@
-import Proposal from "../../models/Proposal";
+import Event from "../../models/Event";
 import express from "express";
 import { verifyAdmin } from "../../middlewares/checkAuth";
 
